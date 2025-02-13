@@ -1,0 +1,341 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f1f5f9;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* El contenido principal toma todo el espacio disponible */
+.container {
+    flex-grow: 1;
+}
+
+
+.subject-filter {
+    margin: 2rem auto;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    margin-bottom: 4%;
+}
+
+.subject-filter h2 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.subject-filter label {
+    font-size: 1rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.subject-filter select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.3s;
+}
+
+.subject-filter select:focus {
+    border-color: #4F46E5;
+    outline: none;
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.2);
+}
+
+
+
+h1 {
+    text-align: center;
+    font-size: 2.8rem;
+    color: #2d3748;
+    margin-top: 5%;
+    margin-bottom: 3%;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+}
+
+/* Contenedor del formulario */
+.form-container {
+    margin: 2rem auto;
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width:80%;
+    margin-bottom: 4%
+}
+
+.form-container h2 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    font-weight: 600;
+    color: #64748b;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #4F46E5;
+    outline: none;
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.2);
+}
+
+button[type="submit"] {
+    background-color: #4CA1AF;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 100%;
+    margin-top: 1rem;
+    color:white;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(101, 169, 169, 0.2);
+}
+
+/* Tabla */
+.subject-table {
+    width:80%;
+    margin: 3rem auto;
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #4CA1AF;
+    color: white;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    font-size: 1rem;
+}
+
+tbody tr:nth-child(odd) {
+    background: #f8fafc;
+}
+
+tbody tr:hover {
+    background: #e2e8f0;
+}
+
+/* Contenedor de acciones */
+.actions-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.delete-btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    background: #C84849 !important;
+    color: white;
+    border: none;
+}
+
+
+
+.edit-btn {
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    background: #49C8C6 !important;
+    color: white;
+    border: none;
+}
+
+
+/* Campo de edición */
+.edit-input {
+    padding: 0.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    flex-grow: 1;
+}
+
+/* Modal flotante como pestaña */
+.modal {
+    display: none;
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    z-index: 1000;
+    padding-top: 2rem;
+    height: 100vh;
+}
+
+.modal-content {
+    background-color: white;
+    margin: auto;
+    padding: 2rem;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.tituloModal {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.modal-intro-nombre {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: red;
+}
+
+#modalEditar {
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilos para el formulario dentro del modal */
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.modal-content form label {
+    font-weight: bold;
+    font-size: 1rem;
+    align-self: flex-start;
+}
+
+.modal-content button {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #49C8C6;
+    color: white;
+    transition: 0.2s;
+}
+
+.modal-content button:hover {
+    background: #4CBEBD;
+}
+
+
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .form-container, .subject-table {
+        max-width: 100%;
+        padding: 1.5rem;
+    }
+
+    th, td {
+        padding: 0.8rem;
+    }
+
+    .actions-cell {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

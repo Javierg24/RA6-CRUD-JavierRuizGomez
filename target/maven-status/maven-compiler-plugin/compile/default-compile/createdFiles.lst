@@ -1,0 +1,13 @@
+com\daw\Controladores\CriterioController.class
+com\daw\DAO\ResultadoAprendizajeDAO.class
+com\daw\DAO\ComponenteBBDD.class
+com\mycompany\ra6\crud\javierruizgomez\JakartaRestConfiguration.class
+com\daw\DAO\CriterioEvaluacionDAO.class
+com\daw\DAO\Service.class
+com\daw\DAO\AsignaturaDAO.class
+com\mycompany\ra6\crud\javierruizgomez\resources\JakartaEE11Resource.class
+com\daw\Controladores\RAController.class
+com\daw\Controladores\AsignaturasController.class
+com\daw\modelo\CriterioEvaluacion.class
+com\daw\modelo\ResultadoAprendizaje.class
+com\daw\modelo\Asignatura.class
