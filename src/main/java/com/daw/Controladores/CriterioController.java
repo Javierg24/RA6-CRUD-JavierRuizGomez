@@ -34,8 +34,8 @@ public class CriterioController {
         criteriosDAO.update(criterioEditado, idCriterio);
     }
 
-    public void eliminarCriterio(int idCriterio) {
-        criteriosDAO.delete(idCriterio);
+    public void eliminarCriterio(int idCriterio, int idResultado, int idAsignatura) {
+        criteriosDAO.delete(idCriterio, idResultado, idAsignatura);
     }
 
     public List<Object> obtenerCriterios() {

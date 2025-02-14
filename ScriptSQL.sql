@@ -77,9 +77,8 @@ END $$
 DELIMITER ;
 
 
-
-drop table asignatuas;
+drop table criterios;
 
 drop table resultados;
 
-drop table criterios;
+drop table asignaturas;

@@ -23,7 +23,7 @@ public class ResultadoAprendizajeDAO extends Service {
         super(componenteBBDD);
     }
 
-    @Override
+
     public List<Object> select() {
         List<Object> resultados = new ArrayList<>();
         try {
@@ -107,8 +107,7 @@ public class ResultadoAprendizajeDAO extends Service {
         // Convertir la lista en un arreglo de String y devolverlo
         return asignaturas.toArray(new String[0]);
     }
-
-    @Override
+    
     public boolean delete(int id) {
         try {
             String query = "DELETE FROM RESULTADOS WHERE id_resultado = ?";
@@ -122,8 +121,6 @@ public class ResultadoAprendizajeDAO extends Service {
             return false;
         }
     }
-
-    @Override
     public boolean insert(Object o) {
         if (o instanceof ResultadoAprendizaje) {
             ResultadoAprendizaje resultado = (ResultadoAprendizaje) o;
@@ -144,7 +141,6 @@ public class ResultadoAprendizajeDAO extends Service {
         return false;
     }
 
-    @Override
     public boolean update(Object o, int id) {
         if (o instanceof ResultadoAprendizaje) {
             ResultadoAprendizaje resultado = (ResultadoAprendizaje) o;
@@ -214,4 +210,5 @@ public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
         resultadoAprendizajeDAO.update(resultadoAprendizajeAct, 2);
         mostrarResultadoAprendizaje(componenteBBDD, resultadoAprendizajeDAO);
     }
+
 }

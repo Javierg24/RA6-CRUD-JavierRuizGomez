@@ -53,14 +53,6 @@ public abstract class Service {
             return false;
         }
     }
-        
 
-    public abstract List<Object> select();        
-
-    public abstract boolean delete(int id);
-
-    public abstract boolean insert(Object o);
-
-    public abstract boolean update(Object o, int id);
 
 }

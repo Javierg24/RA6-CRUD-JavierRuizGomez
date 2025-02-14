@@ -44,13 +44,14 @@
         %>
 
         <div class="container">
-            <h1>Gestión de Resultados de Aprendizaje</h1>
+            <h1 class="title">Gestión de Resultados de Aprendizaje</h1>
 
             <div class="subject-filter">
                 <h2>Filtrar Resultados</h2>
                 <form>
                     <label for="nombreAsignatura">Selecciona una Asignatura:</label>
                     <select name="nombreAsignatura" id="nombreAsignatura" onchange="this.form.submit()">                        
+                        <option value="">Seleccione...</option>
                         <%
                             String[] asignaturas = rAController.obtenerAsignaturas();
                             for (String asignatura : asignaturas) {
@@ -110,6 +111,7 @@
             <% } else { %>
 
             <% }%>
+            <% if (nombreAsignatura != "Seleccione..." && nombreAsignatura != null && !nombreAsignatura.isEmpty()) {%>
             <div class="form-container">
                 <h2>Agregar Resultado de Aprendizaje</h2>
                 <form method="post" class="subject-form">
@@ -129,7 +131,7 @@
                     <button type="submit" name="accion" value="agregar">Agregar</button>
                 </form>
             </div>
-
+            <% }%>
         </div>
 
         <!-- Modal de edición -->
@@ -139,8 +141,7 @@
                 <h2 class="tituloModal">Editar Resultado de Aprendizaje</h2>
                 <form method="post">
                     <input type="hidden" name="idResultado" id="modalIdResultado">
-                    <label class="modal-intro-nombre-label" for="modalIdAsignatura">Id Asignatura</label>
-                    <input type="number" name="idAsignatura" id="modalIdAsignatura" class="modal-intro-nombre">
+                    <input type="hidden" name="idAsignatura" id="modalIdAsignatura">
                     <label class="modal-intro-nombre-label" for="modalNombre">Nombre:</label>
                     <input type="text" name="nombre" id="modalNombre" class="modal-intro-nombre" required>
                     <button type="submit" name="accion" value="editar">Guardar Cambios</button>

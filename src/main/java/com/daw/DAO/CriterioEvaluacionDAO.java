@@ -24,7 +24,6 @@ public class CriterioEvaluacionDAO extends Service {
         super(componenteBBDD);
     }
 
-    @Override
     public List<Object> select() {
         List<Object> criterios = new ArrayList<>();
         try {
@@ -161,13 +160,15 @@ public class CriterioEvaluacionDAO extends Service {
         return asignaturas;
     }
 
-    @Override
-    public boolean delete(int id) {
+    public boolean delete(int idCriterio, int idResultado, int idAsignatura) {
         try {
-            String query = "DELETE FROM CRITERIOS WHERE id_criterio = ?";
+            String query = "DELETE FROM CRITERIOS WHERE id_criterio = ? AND id_resultado = ? AND id_asignatura = ?";
             this.componenteBBDD.setConsulta(query);
             PreparedStatement preparedStatement = this.componenteBBDD.getConexion().prepareStatement(query);
-            preparedStatement.setInt(1, id);
+            preparedStatement.setInt(1, idCriterio);
+            preparedStatement.setInt(2, idResultado);
+            preparedStatement.setInt(3, idAsignatura);
+
             int result = preparedStatement.executeUpdate();
             return result > 0;
         } catch (SQLException ex) {
@@ -176,7 +177,6 @@ public class CriterioEvaluacionDAO extends Service {
         }
     }
 
-    @Override
     public boolean insert(Object o) {
         if (o instanceof CriterioEvaluacion) {
             CriterioEvaluacion criterio = (CriterioEvaluacion) o;
@@ -199,19 +199,20 @@ public class CriterioEvaluacionDAO extends Service {
         return false;
     }
 
-    @Override
     public boolean update(Object o, int id) {
         if (o instanceof CriterioEvaluacion) {
             CriterioEvaluacion criterio = (CriterioEvaluacion) o;
             try {
-                String query = "UPDATE CRITERIOS SET id_resultado = ?, id_asignatura = ?, porcentaje = ?, nombre = ? WHERE id_criterio = ?";
+                String query = "UPDATE CRITERIOS SET porcentaje = ?, nombre = ? WHERE id_criterio = ? AND id_resultado = ? AND id_asignatura = ?";
                 this.componenteBBDD.setConsulta(query);
                 PreparedStatement preparedStatement = this.componenteBBDD.getConexion().prepareStatement(query);
-                preparedStatement.setInt(1, criterio.getIdResultado());
-                preparedStatement.setInt(2, criterio.getIdAsignatura());
-                preparedStatement.setBigDecimal(3, criterio.getPorcentaje());
-                preparedStatement.setString(4, criterio.getNombre());
-                preparedStatement.setInt(5, id);
+                // Asignar valores a los parámetros en el mismo orden en el que aparecen en la consulta
+                preparedStatement.setBigDecimal(1, criterio.getPorcentaje());
+                preparedStatement.setString(2, criterio.getNombre());
+                preparedStatement.setInt(3, criterio.getIdCriterio());
+                preparedStatement.setInt(4, criterio.getIdResultado());
+                preparedStatement.setInt(5, criterio.getIdAsignatura());
+
                 int result = preparedStatement.executeUpdate();
                 return result > 0;
             } catch (SQLException ex) {
@@ -278,12 +279,11 @@ public class CriterioEvaluacionDAO extends Service {
     }
 
     public static void main(String[] args) {
-        CriterioEvaluacion actCriterioEvaluacion = new CriterioEvaluacion(2, 1, 1, BigDecimal.valueOf(20), "Teoria");
+        CriterioEvaluacion actCriterioEvaluacion = new CriterioEvaluacion(2, 1, 1, BigDecimal.valueOf(50), "Teoria");
         CriterioEvaluacion insCriterioEvaluacion = new CriterioEvaluacion(6, 1, 1, BigDecimal.valueOf(60), "Examen");
         ComponenteBBDD componenteBBDD = new ComponenteBBDD();
         CriterioEvaluacionDAO criterioEvaluacionDAO = new CriterioEvaluacionDAO(componenteBBDD);
         mostrarCriterios(componenteBBDD, criterioEvaluacionDAO);
-        criterioEvaluacionDAO.delete(1);
         mostrarCriterios(componenteBBDD, criterioEvaluacionDAO);
         criterioEvaluacionDAO.update(actCriterioEvaluacion, 2);
         mostrarCriterios(componenteBBDD, criterioEvaluacionDAO);
@@ -303,5 +303,9 @@ public class CriterioEvaluacionDAO extends Service {
         }
         int id = criterioEvaluacionDAO.obtenerIdResultadoPorNombre("RA1");
         System.out.println(id);
+        CriterioEvaluacion criterioModificado = new CriterioEvaluacion(5, 1, 1, BigDecimal.valueOf(20), "Ejercicio Cambiado");
+        criterioEvaluacionDAO.update(criterioModificado, 1);
+        criterioEvaluacionDAO.delete(6, 5, 3);
     }
+
 }

@@ -38,7 +38,7 @@
             List<Object> asignaturas = asignaturasController.obtenerAsignaturas();
         %>
         <div class="container">
-            <h1>Gestión de Asignaturas</h1>
+            <h1 class="title">Gestión de Asignaturas</h1>
 
             <!-- Tabla con las asignaturas -->
             <div class="subject-table">        

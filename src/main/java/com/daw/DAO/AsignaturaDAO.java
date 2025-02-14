@@ -18,7 +18,6 @@ public class AsignaturaDAO extends Service {
 
     }
 
-    @Override
     public List<Object> select() {
         List<Object> asignaturas = new ArrayList<>();
         try {
@@ -41,8 +40,6 @@ public class AsignaturaDAO extends Service {
         return asignaturas;
     }
 
-
-    @Override
     public boolean delete(int id) {
         try {
             // Crear la consulta SQL para seleccionar la asignatura con el id especificado
@@ -72,7 +69,6 @@ public class AsignaturaDAO extends Service {
         return false;
     }
 
-    @Override
     public boolean insert(Object o) {
         try {
             Asignatura asignatura = (Asignatura) o;
@@ -89,7 +85,6 @@ public class AsignaturaDAO extends Service {
         }
     }
 
-    @Override
     public boolean update(Object o, int id) {
         try {
             Asignatura asignatura = (Asignatura) o;
@@ -130,4 +125,5 @@ public class AsignaturaDAO extends Service {
          */
         asignaturaDAO.update(asignatura, 1);
     }
+
 }
