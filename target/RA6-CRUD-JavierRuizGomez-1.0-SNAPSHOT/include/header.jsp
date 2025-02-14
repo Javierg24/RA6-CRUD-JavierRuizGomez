@@ -20,8 +20,8 @@
             <nav>
                 <ul>                    
                     <li><a href="asignaturas.jsp">Asignaturas</a></li>
-                    <li><a href="resultados2.jsp">Resultados</a></li>
-                    <li><a href="criterios2.jsp">Criterios</a></li>
+                    <li><a href="resultados.jsp">Resultados</a></li>
+                    <li><a href="criterios.jsp">Criterios</a></li>
                 </ul>
             </nav>
         </header>       

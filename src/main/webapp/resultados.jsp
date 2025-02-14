@@ -1,11 +1,5 @@
-<%-- 
-    Document   : resultados
-    Created on : 20 ene 2025, 11:56:50
-    Author     : DAW2
---%>
-
-<%@page import="com.daw.Controladores.RAController"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="com.daw.Controladores.RAController"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="com.daw.DAO.ResultadoAprendizajeDAO, com.daw.modelo.ResultadoAprendizaje, com.daw.DAO.ComponenteBBDD" %>
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
@@ -19,7 +13,7 @@
         <%@ include file="include/header.jsp" %>
         <%
             RAController rAController = new RAController();
-
+            String selected = null;
             // Procesar acciones del formulario
             String accion = request.getParameter("accion");
             if (accion != null) {
@@ -39,32 +33,60 @@
                 }
             }
 
-            // Mostrar la lista actualizada
-            List<Object> resultados = rAController.obtenerRA();
+            // Obtener el id de la asignatura seleccionada desde el formulario
+            String nombreAsignatura = request.getParameter("nombreAsignatura");
+            List<Object> resultados = null;
+
+            // Si se seleccionó una asignatura, obtener los resultados filtrados
+            if (nombreAsignatura != null) {
+                resultados = rAController.seleccionarPorAsignatura(nombreAsignatura);
+            }
         %>
 
         <div class="container">
-            <h1>Gestión de Resultados de Aprendizaje</h1>
-            
+            <h1 class="title">Gestión de Resultados de Aprendizaje</h1>
+
+            <div class="subject-filter">
+                <h2>Filtrar Resultados</h2>
+                <form>
+                    <label for="nombreAsignatura">Selecciona una Asignatura:</label>
+                    <select name="nombreAsignatura" id="nombreAsignatura" onchange="this.form.submit()">                        
+                        <option value="">Seleccione...</option>
+                        <%
+                            String[] asignaturas = rAController.obtenerAsignaturas();
+                            for (String asignatura : asignaturas) {
+                                selected = (asignatura.equals(nombreAsignatura)) ? "selected" : "";
+                        %>
+                        <option value="<%= asignatura%>" <%= selected%>><%= asignatura%></option>
+                        <%
+                            }
+                        %>
+                    </select>                   
+                </form>
+            </div>
+
+            <%-- Mostrar la tabla solo si se seleccionó una asignatura --%>
+            <% if (resultados != null && !resultados.isEmpty()) { %>
             <div class="subject-table">                
                 <table class="table">
                     <thead>
                         <tr>
                             <th>ID Resultado</th>
-                            <th>ID Asignatura</th>
+                            <th>Asignatura</th>
                             <th>Nombre</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <%
+
                             for (Object obj : resultados) {
                                 if (obj instanceof ResultadoAprendizaje) {
                                     ResultadoAprendizaje resultado = (ResultadoAprendizaje) obj;
                         %>
                         <tr>
                             <td><%= resultado.getIdResultado()%></td>
-                            <td><%= resultado.getIdAsignatura()%></td>
+                            <td><%= nombreAsignatura%></td>
                             <td><%= resultado.getNombre()%></td>
                             <td class="actions-cell">
                                 <!-- Botón editar -->
@@ -81,29 +103,35 @@
                         <%
                                 }
                             }
+
                         %>
                     </tbody>
                 </table>
             </div>
+            <% } else { %>
 
+            <% }%>
+            <% if (nombreAsignatura != "Seleccione..." && nombreAsignatura != null && !nombreAsignatura.isEmpty()) {%>
             <div class="form-container">
                 <h2>Agregar Resultado de Aprendizaje</h2>
-                <form method="post" action="resultados.jsp" class="subject-form">
-                    <div class="input-group">
-                        <label for="idResultado">ID Resultado:</label>
-                        <input type="number" name="idResultado" id="idResultado" required><br>
-                    </div>
+                <form method="post" class="subject-form">
                     <div class="input-group">
                         <label for="idAsignatura">ID Asignatura:</label>
-                        <input type="number" name="idAsignatura" id="idAsignatura" required><br>
+                        <input type="number" name="idAsignatura" id="idAsignatura" required 
+                               value="<%= (nombreAsignatura != null) ? rAController.obtenerIdAsignatura(nombreAsignatura) : ""%>">
+                    </div>
+                    <div class="input-group">
+                        <label for="idResultado">ID Resultado:</label>
+                        <input type="number" name="idResultado" id="idResultado" required>
                     </div>
                     <div class="input-group">
                         <label for="nombre">Nombre:</label>
-                        <input type="text" name="nombre" id="nombre" required><br>
+                        <input type="text" name="nombre" id="nombre" required>
                     </div>
                     <button type="submit" name="accion" value="agregar">Agregar</button>
                 </form>
             </div>
+            <% }%>
         </div>
 
         <!-- Modal de edición -->
@@ -111,10 +139,9 @@
             <div class="modal-content">
                 <span class="close" onclick="cerrarModal()">&times;</span>
                 <h2 class="tituloModal">Editar Resultado de Aprendizaje</h2>
-                <form method="post" action="resultados.jsp">
+                <form method="post">
                     <input type="hidden" name="idResultado" id="modalIdResultado">
-                    <label class="modal-intro-nombre-label" for="modalIdAsignatura">Id Asignatura</label>
-                    <input type="number" name="idAsignatura" id="modalIdAsignatura" class="modal-intro-nombre">
+                    <input type="hidden" name="idAsignatura" id="modalIdAsignatura">
                     <label class="modal-intro-nombre-label" for="modalNombre">Nombre:</label>
                     <input type="text" name="nombre" id="modalNombre" class="modal-intro-nombre" required>
                     <button type="submit" name="accion" value="editar">Guardar Cambios</button>
@@ -122,9 +149,8 @@
             </div>
         </div>
 
-
         <%@ include file="include/footer.jsp" %>
-        
+
         <script>
             function abrirModal(idResultado, idAsignatura, nombre) {
                 document.getElementById('modalIdResultado').value = idResultado;
@@ -143,6 +169,7 @@
                     cerrarModal();
                 }
             }
+
 
         </script>
     </body>

@@ -4,6 +4,8 @@
 <%@page import="com.daw.DAO.CriterioEvaluacionDAO"%>
 <%@page import="com.daw.DAO.ComponenteBBDD"%>
 <%@page import="com.daw.modelo.CriterioEvaluacion"%>
+<%@page import="com.daw.modelo.Asignatura"%>
+<%@page import="com.daw.modelo.ResultadoAprendizaje"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -15,98 +17,148 @@
     <body>
         <%@ include file="include/header.jsp" %>        
         <div class="container">
+
             <%
-
                 CriterioController criterioController = new CriterioController();
+                List<Object> criterios = null;
+                String[] resultados = null;
+                String selected = null;
+                String nombreAsignatura = request.getParameter("nombreAsignatura");
+                String nombreResultado = request.getParameter("resultado");
 
-                String accion = request.getParameter("accion");
+                if (nombreAsignatura != null && !nombreAsignatura.isEmpty()) {
+                    resultados = criterioController.obtenerRA(nombreAsignatura);
+                }
+
+                if (nombreAsignatura != null && nombreResultado != null) {
+                    criterios = criterioController.obtenerCriterios(nombreAsignatura, nombreResultado);
+                }
+
+               String accion = request.getParameter("accion");
                 if (accion != null) {
-                    try {
-                        switch (accion) {
-                            case "agregar":
-                                int idCriterio = Integer.parseInt(request.getParameter("id_criterio"));
-                                int idResultado = Integer.parseInt(request.getParameter("id_resultado"));
-                                int idAsignatura = Integer.parseInt(request.getParameter("id_asignatura"));
-                                BigDecimal porcentaje = new BigDecimal(request.getParameter("porcentaje"));
-                                String nombre = request.getParameter("nombre");
-                                criterioController.agregarCriterio(idCriterio, idResultado, idAsignatura, porcentaje, nombre);
-                                break;
-                            case "editar":
-                                idCriterio = Integer.parseInt(request.getParameter("id_criterio"));
-                                idResultado = Integer.parseInt(request.getParameter("RA"));
-                                idAsignatura = Integer.parseInt(request.getParameter("idAsignatura"));
-                                porcentaje = new BigDecimal(request.getParameter("porcentaje"));
-                                nombre = request.getParameter("nombre");
-                                criterioController.editarCriterio(idCriterio, idResultado, idAsignatura, porcentaje, nombre);
-                                break;
-                            case "borrar":
-                                idCriterio = Integer.parseInt(request.getParameter("id_criterio"));
-                                criterioController.eliminarCriterio(idCriterio);
-                                break;
-                        }
-                    } catch (Exception e) {
-                        out.println("<p class='text-danger'>Error al procesar la acción: " + e.getMessage() + "</p>");
+                    if (accion.equals("agregar")) {
+                        int id_asignatura = Integer.parseInt(request.getParameter("id_asignatura"));
+                        int id_resultado = Integer.parseInt(request.getParameter("id_resultado"));
+                        int id_criterio = Integer.parseInt(request.getParameter("id_criterio"));
+                        BigDecimal porcentaje = new BigDecimal(request.getParameter("porcentaje"));
+                        String nombre = request.getParameter("nombre");
+                        // Método aniadir adaptado para recibir todos los parámetros
+                        criterioController.agregarCriterio(id_criterio, id_resultado, id_asignatura, porcentaje, nombre);
+                    } else if (accion.equals("borrar")) {
+                        int id_asignatura = Integer.parseInt(request.getParameter("id_asignatura"));
+                        int id_resultado = Integer.parseInt(request.getParameter("id_resultado"));
+                        int id_criterio = Integer.parseInt(request.getParameter("id_criterio"));
+                        criterioController.eliminarCriterio(id_criterio, id_resultado, id_asignatura);
+                    } else if (accion.equals("editar")) {
+                        int id_asignatura = Integer.parseInt(request.getParameter("id_asignatura"));
+                        int id_resultado = Integer.parseInt(request.getParameter("id_resultado"));
+                        int id_criterio = Integer.parseInt(request.getParameter("id_criterio"));
+                        BigDecimal porcentaje = new BigDecimal(request.getParameter("porcentaje"));
+                        String nombre = request.getParameter("nombre");
+                        criterioController.editarCriterio(id_criterio, id_resultado, id_asignatura, porcentaje, nombre);
                     }
                 }
 
-                List<Object> criterios = criterioController.obtenerCriterios();
             %>
 
-            <h1>Criterios de Evaluación</h1>
+            <h1 class="title">Filtrar Criterios de Evaluación</h1>
+            <div class="subject-filter">
+                <!-- Formulario unificado para Asignatura y Resultado -->
+                <form method="get" action="criterios.jsp" id="filtroForm">
+                    <label for="nombreAsignatura">Selecciona una Asignatura:</label>
+                    <select name="nombreAsignatura" id="nombreAsignatura" onchange="this.form.submit()"> 
+                        <option value="">Seleccione...</option>
+                        <%                            String[] asignaturas = criterioController.obtenerAsignaturas();
+                            for (String asignatura : asignaturas) {
+                                selected = (asignatura.equals(nombreAsignatura)) ? "selected" : "";
+                        %>
+                        <option value="<%= asignatura%>" <%= selected%>><%= asignatura%></option>
+                        <%
+                            }
+                        %>
+                    </select>
+
+                    <label for="resultado">Seleccionar Resultado de Aprendizaje:</label>
+                    <select name="resultado" id="resultado" onchange="this.form.submit()"> 
+                        <option value="">Seleccione...</option>
+                        <%
+                            if (resultados != null) {
+                                for (String resultado : resultados) {
+                                    selected = (resultado.equals(nombreResultado)) ? "selected" : "";
+                        %>
+                        <option value="<%= resultado%>" <%= selected%>><%= resultado%></option>
+                        <%
+                                }
+                            }
+                        %>
+                    </select>
+
+                </form>
+            </div>
+            <!-- Tabla de Criterios de Evaluación -->
+            <% if (criterios != null && !criterios.isEmpty()) { %>           
             <div class="subject-table">
                 <table>
                     <thead>
                         <tr>
                             <th>ID Criterio</th>
-                            <th>ID Resultado</th>
-                            <th>ID Asignatura</th>
+                            <th>Resultado</th>
+                            <th>Asignatura</th>
                             <th>Porcentaje</th>
                             <th>Nombre</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% for (Object obj : criterios) {
+                        <%
+                            for (Object obj : criterios) {
                                 if (obj instanceof CriterioEvaluacion) {
                                     CriterioEvaluacion criterio = (CriterioEvaluacion) obj;
                         %>
                         <tr>
                             <td><%= criterio.getIdCriterio()%></td>
-                            <td><%= criterio.getIdResultado()%></td>
-                            <td><%= criterio.getIdAsignatura()%></td>
+                            <td><%= nombreResultado%></td>
+                            <td><%= nombreAsignatura%></td>
                             <td><%= criterio.getPorcentaje()%></td>
                             <td><%= criterio.getNombre()%></td>
                             <td class="actions-cell">
                                 <div class="d-inline">
                                     <button type="submit" class="edit-btn" onclick="abrirModal('<%= criterio.getIdCriterio()%>', '<%= criterio.getIdResultado()%>', '<%= criterio.getIdAsignatura()%>', '<%= criterio.getNombre()%>', '<%= criterio.getPorcentaje()%>')">Editar</button>
                                 </div>
-                                <form  action="criterios.jsp" class="d-inline">
+                                <form action="criterios.jsp">
                                     <input type="hidden" name="accion" value="borrar">
                                     <input type="hidden" name="id_criterio" value="<%= criterio.getIdCriterio()%>">
+                                    <input type="hidden" name="id_resultado" value="<%= criterio.getIdResultado()%>">
+                                    <input type="hidden" name="id_asignatura" value="<%= criterio.getIdAsignatura()%>">                                    
                                     <button type="submit" class="delete-btn">Borrar</button>
                                 </form>
                             </td>
                         </tr>
-                        <% }
-                            }%>
+                        <%
+                                }
+                            }
+                        %>
                     </tbody>
                 </table>
             </div>
+            <% }%>
+
+            <% if (nombreAsignatura != "Seleccione..." && nombreAsignatura != null && !nombreAsignatura.isEmpty() && nombreResultado != null && nombreResultado != "Seleccione..." && !nombreResultado.isEmpty()) {%>
             <div class="form-container">
                 <h2>Agregar Criterio</h2>
                 <form method="get" action="criterios.jsp">
                     <input type="hidden" name="accion" value="agregar">
                     <div class="input-group">
-                        <label>ID Criterio:</label>
-                        <input type="number" name="id_criterio" required>
+                        <label>ID Asignatura:</label>
+                        <input type="text" name="id_asignatura" value="<%= criterioController.obtenerIdAsignatura(nombreAsignatura)%>" readonly>
                     </div>
                     <div class="input-group">
                         <label>ID Resultado:</label>
-                        <input type="number" name="id_resultado" required>
+                        <input type="text" name="id_resultado" value="<%= criterioController.obtenerIdRA(nombreResultado)%>" readonly>
                     </div>
                     <div class="input-group">
-                        <label>ID Asignatura:</label>
-                        <input type="number" name="id_asignatura" required>
+                        <label>ID Criterio:</label>
+                        <input type="number" name="id_criterio" required>
                     </div>
                     <div class="input-group">
                         <label>Porcentaje:</label>
@@ -119,6 +171,9 @@
                     <button type="submit" class="btn btn-primary">Agregar</button>
                 </form>
             </div>
+            <% }%>
+
+
 
             <!-- Modal de edición -->
             <div id="modalEditar" class="modal">            
@@ -127,22 +182,24 @@
                     <h2 class="tituloModal">Editar Criterio</h2>
                     <form method="post" action="criterios.jsp">
                         <input type="hidden" name="id_criterio" id="modalIdCriterio">
-                        <label  class="modal-intro-nombre-label" for="modalRA">Id Resultado Aprendizaje</label>
-                        <input type="number" name="RA" id="modalRA" class="modal-intro-nombre">
-                        <label class="modal-intro-nombre-label" for="modalIdAsignatura">Id Asignatura</label>
-                        <input type="number" name="idAsignatura" id="modalIdAsignatura" class="modal-intro-nombre">
+                        <input type="hidden" name="id_resultado" id="modalRA">
+                        <input type="hidden" name="id_asignatura" id="modalIdAsignatura">
                         <label class="modal-intro-nombre-label" for="modalNombre">Nombre:</label>
-                        <input type="text" name="nombre" id="modalNombre" class="modal-intro-nombre" >
+                        <input type="text" name="nombre" id="modalNombre" class="modal-intro-nombre" required>
                         <label class="modal-intro-nombre-label" for="modalPorcentaje">Porcentaje:</label>
-                        <input type="number" step="0.01" name="porcentaje" id="modalPorcentaje"  class="modal-intro-nombre">
+                        <input type="number" step="0.01" name="porcentaje" id="modalPorcentaje" class="modal-intro-nombre" required>
                         <button type="submit" name="accion" value="editar">Guardar Cambios</button>
                     </form>
                 </div>
             </div>
 
         </div>
+
         <%@ include file="include/footer.jsp" %>
+
         <script>
+
+            // Funciones del modal
             function abrirModal(idCriterio, idRa, idAsignatura, nombre, porcentaje) {
                 document.getElementById('modalIdCriterio').value = idCriterio;
                 document.getElementById('modalRA').value = idRa;
